@@ -1,0 +1,25 @@
+{
+    "name": "Brother's BBQ",
+    "number_items": 6,
+    "menu": [
+        "Beef Brisket",
+        "Pork Brisket",
+        "BBQ Chicken",
+        "Babyback Ribs",
+        "Coleslaw",
+        "Corn on the Cob"
+    ],
+    "prices": [
+        11.99,
+        11.99,
+        9.54,
+        8.80,
+        4.45,
+        3.20
+    ],
+    "five_star_rating": 3.7,
+    "location": [
+        11.8304,
+        -4.3892
+    ]
+}

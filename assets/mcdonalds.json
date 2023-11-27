@@ -4,26 +4,26 @@
     "menu": [
         "Big Mac",
         "Quarter Pounder",
-        "Pork Dumplings",
-        "Beef Dumplings",
-        "Egg Rolls",
-        "Teriayki Chicken",
-        "Drunken Noodles",
-        "Hot and Sour Soup"
+        "Chicken Nuggets - 6 pc",
+        "Chicken Nuggets - 10 pc",
+        "French Fry - Medium",
+        "French Fry - Large",
+        "Vanilla Ice Cream Cone",
+        "Turkey Wrap"
     ],
     "prices": [
-        12.22,
-        9.78,
-        7.89,
-        5.67,
+        8.99,
+        8.59,
+        4.76,
+        5.76,
         3.99,
-        12.99,
-        11.99,
+        4.49,
+        2.50,
         5.00
     ],
-    "five_star_rating": 4.8,
+    "five_star_rating": 2.3,
     "location": [
-        -23.432432,
-        3.456654
+        32.43232,
+        5.69328
     ]
 }

@@ -3,7 +3,8 @@ use csv::Reader;
 use std::error::Error;
 use serde::Deserialize;
 use std::io::BufReader;
-
+use std::io::{stdin};
+use std::ops::Index;
 
 // need to modify the Cargo.toml file to derive Deserialize in serde
 #[derive(Deserialize, Debug)]
@@ -16,13 +17,39 @@ struct Restaurant {
     location: Vec<f32>,
 }
 
+impl Restaurant {
+    fn print_menu(&self) -> () {
+        let mut i = 0;
+        println!("-------- {} --------", self.name);
+        for item in &self.menu {
+            println!("#{} {}....... ${}", i+1, item, self.prices[i]);
+            i += 1;
+        }
+        println!("\n");
+    }
+
+}
+
+struct User {
+    location: Vec<f32>,
+    account_balance: f32
+}
 
 
 fn print_type_of<T>(_: &T) {
     println!("{}", std::any::type_name::<T>());
 }
 
-
+fn print_restaurants_in_area(all_restaurants: &Vec<Restaurant>, user: &User) -> () {
+    let user_location = &user.location;
+    println!("Here are restaurants close by:");
+    let mut i = 1;
+    for rest in all_restaurants {    
+        let distance: f32 = f32::sqrt((user_location[0] - rest.location[0]).powf(2.0) + (user_location[1] - rest.location[1]).powf(2.0));
+        println!("[{}] {} ... {} miles away", i, rest.name, distance);
+        i += 1;
+    }
+}
 
 fn load_restaurants(filepath: &str) -> Result<Restaurant, Box<dyn Error>> {
 
@@ -35,32 +62,54 @@ fn load_restaurants(filepath: &str) -> Result<Restaurant, Box<dyn Error>> {
 }
 
 
-
+// impl <T, Idx> Index<Idx> for Vec<T> 
+// where 
+//     Idx: SliceIndex<[T], Output = T>,
+// {
+//     type Output = T;
+//     #[inline(always)]
+//     fn index(&self, index: Idx) -> &Self::Output {
+//         self.slice.index(index)
+//     }
+// }
 
 
 fn main() {
-    
 
-
-    // let mut matthew_order = Order::default();
-    // let new_item = FoodItem {name: String::from("Chicken Curry"), price: 12.99};
-    // let new_item_2 = FoodItem {name: String::from("Pad Thai"), price: 6.99};
-    // matthew_order.add_item_to_cart(new_item);
-    // matthew_order.add_item_to_cart(new_item_2);
-
-
+    let mut matthew = User {location: vec![1.33, -3.23], account_balance: 100.0};
 
     let mut all_restaurants: Vec<Restaurant>= vec![];
 
-    // matthew_order.print_order();
-    let restaurant_files: Vec<&str> = vec!["assets/golden_thai.json", "assets/mcdonalds.json"];
+    let restaurant_files: Vec<&str> = vec!["assets/golden_thai.json", "assets/mcdonalds.json", "assets/brothers_bbq.json"];
 
     for single_restaurant in restaurant_files {
         all_restaurants.push(load_restaurants(single_restaurant).unwrap());
     }
-    
 
-    print_type_of(&all_restaurants[0]);
+    print_restaurants_in_area(&all_restaurants, &matthew);
+
+    let mut choice = String::new();
+
+    println!("Where would you like to order from? Enter `1`, `2`, ...");
+
+    stdin().read_line(&mut choice).unwrap();
+
+    let mut restaurant_index;
+    match choice.parse::<i8>() {
+        Ok(n) => restaurant_index = n,
+        Err(e) => println!("Please enter a valid number!"),
+    }
+
+
+    // TODO. How to index a Vec<Restaurant> ???
+    // let chosen_restaurant =  &all_restaurants[restaurant_index];
+
+
+    // for rest in &all_restaurants {
+    //     rest.print_menu();
+    // }
+
+    // print_type_of(&all_restaurants[0]);
 
 
 
