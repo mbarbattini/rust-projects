@@ -1,86 +1,74 @@
-// if you want to put a custom struct into a HashMap, you need to tell rust how to Hash it with the hash trait
-use std::collections::HashMap;
-use std::fs;
+use std::fs::File;
 use csv::Reader;
 use std::error::Error;
 use serde::Deserialize;
+use std::io::BufReader;
 
+
+// need to modify the Cargo.toml file to derive Deserialize in serde
+#[derive(Deserialize, Debug)]
+struct Restaurant {
+    name: String,
+    number_items: i32,
+    menu: Vec<String>,
+    prices: Vec<f32>,
+    five_star_rating: f32,
+    location: Vec<f32>,
+}
+
+
+
+fn print_type_of<T>(_: &T) {
+    println!("{}", std::any::type_name::<T>());
+}
+
+
+
+fn load_restaurants(filepath: &str) -> Result<Restaurant, Box<dyn Error>> {
+
+    let restaurant_file = File::open(filepath)?;
+    let reader = BufReader::new(restaurant_file); 
+
+    let restaurants = serde_json::from_reader(reader)?;
+
+    Ok(restaurants)
+}
+
+
+
+
+
+fn main() {
+    
+
+
+    // let mut matthew_order = Order::default();
+    // let new_item = FoodItem {name: String::from("Chicken Curry"), price: 12.99};
+    // let new_item_2 = FoodItem {name: String::from("Pad Thai"), price: 6.99};
+    // matthew_order.add_item_to_cart(new_item);
+    // matthew_order.add_item_to_cart(new_item_2);
+
+
+
+    let mut all_restaurants: Vec<Restaurant>= vec![];
+
+    // matthew_order.print_order();
+    let restaurant_files: Vec<&str> = vec!["assets/golden_thai.json", "assets/mcdonalds.json"];
+
+    for single_restaurant in restaurant_files {
+        all_restaurants.push(load_restaurants(single_restaurant).unwrap());
+    }
+    
+
+    print_type_of(&all_restaurants[0]);
+
+
+
+}
 
 struct FoodItem {
     name: String,
-    price: String,
-}
-
-struct Restaurant {
-    five_star_rating: f32,
-    location: Vec<f32>,
-    menu: Menu,
-    name: String,
-}
-
-
-
-fn read_from_file(path: &str) -> Result<(), Box<dyn Error>> {
-    let mut reader = csv::Reader::from_path(path)?;
-
-    let headers = reader.headers()?;
-    println!("{:?}", headers);
-
-    for result in reader.deserialize() {
-        let record: FoodItem = result?;
-    
-        println!("{:?}", record);
-    }
-
-    // for result in reader.records() {
-    //     let record = result?;
-
-    //     println!("{:?}", record);
-    // }
-
-    Ok(())
-}
-
-fn main() {
-    let GOLDEN_THAI_MENU_ITEMS: Vec<String> = vec![
-        String::from("Pad Thai"), String::from("Drunken Noodles"), String::from("Lo Mein"), String::from("Dumplings")
-    ];
-
-    let GOLDEN_THAI_MENU_PRICES: Vec<f32> = vec![
-        12.99, 8.77, 14.93, 4.56
-    ];
-
-    read_from_file("src/restaurant_names.csv");
-
-
-
-    let golden_thai_menu = Menu::new(GOLDEN_THAI_MENU_ITEMS, GOLDEN_THAI_MENU_PRICES);
-
-    let golden_thai = Restaurant::new(vec![22.56, 11.39], golden_thai_menu, String::from("Golden Thai"));
-
-    // let restaurant_names  = match fs::read_to_string("src/restaurant_names.txt") {
-    //     Ok(restaurant_names) => restaurant_names,
-    //     Err(e) => String::from("None"),
-    // };
-    // let restaurant_names = fs::read_to_string("src/restaurant_names.txt");
-
-
-    // if let Ok(word) = restaurant_names {
-    //     println!("{}", word);
-    // } else {
-    //     println!("")
-    // }
-
-
-
-
-    let mut matthewOrder = Order::default();
-    let newItem = FoodItem {name: String::from("Chicken Curry"), price: 12.99};
-    let newItem2 = FoodItem {name: String::from("Pad Thai"), price: 6.99};
-    matthewOrder.add_item_to_cart(newItem);
-    matthewOrder.add_item_to_cart(newItem2);
-
-    matthewOrder.print_order();
+    price: f32,
 }
 
 struct Order {
@@ -120,83 +108,3 @@ impl Order {
         }
     }
 }
-
-
-
-struct Menu {
-    items: Vec<String>,
-    prices: Vec<f32>,
-}
-
-
-
-
-// default constructor
-impl Default for Restaurant {
-    fn default() -> Self {
-        Self {
-            five_star_rating: 0.0,
-            location: vec![0.0, 0.0],
-            menu: Menu::default(),
-            name: String::from("") 
-        }
-    }
-}
-
-// trait Eq implementation for FoodItem
-// required to put the FoodItem in a HashMap
-// docs said to include nothing
-impl Eq for FoodItem {}
-
-// implementing Eq also implies PartialEq
-// if both the name, price are the same
-impl PartialEq for FoodItem {
-    fn eq(&self, other: &Self) -> bool {
-        self.name == other.name && 
-        self.price == other.price 
-    }
-}
-
-
-
-impl Restaurant {
-    // parameterized constructor
-    pub fn new(location: Vec<f32>, menu: Menu, name: String) -> Self {
-        Self {
-            five_star_rating: 5.0,
-            location: location,
-            menu,
-            name,
-            
-
-        }
-    }
-}
-
-// default constuctor
-impl Default for Menu {
-    fn default() -> Self {
-        Self {
-            items: vec![],
-            prices: vec![],
-        }
-    }
-}
-
-impl Menu {
-    pub fn new(items: Vec<String>, prices: Vec<f32>) -> Self {
-        // let mut items_map_price = HashMap::new();
-        // for item in items {
-        //     items_map_price.insert(item, prices[0]);
-        // }
-        Self {
-            items: items,
-            prices: prices,
-        }
-    }
-}
-
-// function not applied to a struct
-// fn create_menus() {
-//     Menu::new(GOLDEN_THAI_MENU_ITEMS, GOLDEN_THAI_MENU_PRICES);
-// }

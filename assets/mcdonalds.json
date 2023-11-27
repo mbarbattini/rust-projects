@@ -1,0 +1,29 @@
+{
+    "name": "Mcdonalds",
+    "number_items": 8,
+    "menu": [
+        "Big Mac",
+        "Quarter Pounder",
+        "Pork Dumplings",
+        "Beef Dumplings",
+        "Egg Rolls",
+        "Teriayki Chicken",
+        "Drunken Noodles",
+        "Hot and Sour Soup"
+    ],
+    "prices": [
+        12.22,
+        9.78,
+        7.89,
+        5.67,
+        3.99,
+        12.99,
+        11.99,
+        5.00
+    ],
+    "five_star_rating": 4.8,
+    "location": [
+        -23.432432,
+        3.456654
+    ]
+}
